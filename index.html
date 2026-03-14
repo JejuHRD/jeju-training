@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>훈련과정 온라인 접수 | 제주직업전문학교</title>
+<title>훈련과정 온라인 접수 | 제주지역인적자원개발위원회</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -189,7 +189,7 @@ select:invalid,select option[value=""]{color:var(--gray-400)}
 
 <header class="header">
   <div class="header-inner">
-    <div class="institution">제주직업전문학교</div>
+    <div class="institution">제주지역인적자원개발위원회</div>
     <h1>2026년 훈련과정 온라인 접수</h1>
     <div class="subtitle">제주지역인적자원개발위원회 지원 사업</div>
   </div>
@@ -331,12 +331,10 @@ select:invalid,select option[value=""]{color:var(--gray-400)}
 
 <script>
 // =========================================================
-// 과정 데이터 (GitHub Pages에서는 courses.json 파일로 분리)
-// 실제 운영 시: fetch('./courses.json') 으로 로드
+// 과정 데이터 — courses.json에서 로드
 // =========================================================
 let COURSES_DATA = [];
 
-// courses.json에서 과정 목록 로드
 async function fetchCourses() {
   try {
     const res = await fetch('./courses.json');
@@ -345,6 +343,7 @@ async function fetchCourses() {
     console.error('과정 목록 로드 실패:', e);
   }
 }
+
 // =========================================================
 // 날짜 포맷
 // =========================================================
@@ -591,29 +590,27 @@ async function handleSubmit(e) {
   };
   
   try {
-    /*
-     * 실제 운영 시:
-     * const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/.../exec';
-     * const res = await fetch(APPS_SCRIPT_URL, {
-     *   method: 'POST',
-     *   body: JSON.stringify(formData)
-     * });
-     * const result = await res.json();
-     */
-    
-    const APPS_SCRIPT_URL =
-      'https://script.google.com/macros/s/AKfycbzPXlKxmrcpV7W-AAWfQET0gRmjLnm9dZVrV8Xx7Gk0eZ6Nk3Bs_dt5TwLRYNYfBZJDvA/exec';
+    // ★ 아래 URL을 본인의 Apps Script 웹앱 URL로 교체하세요
+    // 찾는 법: Apps Script 편집기 > [배포] > [배포 관리] > URL 복사
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzPXlKxmrcpV7W-AAWfQET0gRmjLnm9dZVrV8Xx7Gk0eZ6Nk3Bs_dt5TwLRYNYfBZJDvA/exec';
 
-    const res = await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(formData)
-    });
+    // Apps Script 웹앱은 POST 시 리다이렉트 문제가 있어 GET 방식 사용
+    const url = new URL(APPS_SCRIPT_URL);
+    url.searchParams.set('action', 'register');
+    url.searchParams.set('data', JSON.stringify(formData));
+
+    const res = await fetch(url.toString());
     const result = await res.json();
     
     if (result.success) {
       showSuccess(result.regId, formData, courseData);
+    } else {
+      alert(result.error || '접수 처리에 실패했습니다.');
+      btn.classList.remove('loading');
+      btn.disabled = false;
     }
   } catch (err) {
+    console.error('접수 오류:', err);
     alert('접수 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
     btn.classList.remove('loading');
     btn.disabled = false;
