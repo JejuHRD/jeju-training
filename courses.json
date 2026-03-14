@@ -1,0 +1,68 @@
+[
+  {
+    "code": "AI-BAKERY-01",
+    "name": "AI 스마트 베이커리 창업과정",
+    "type": "양성",
+    "startDate": "2026-04-15",
+    "endDate": "2026-05-22",
+    "time": "09:00~18:00",
+    "location": "제주시 연동 제주직업전문학교 3층 실습실",
+    "capacity": 20,
+    "status": "모집중"
+  },
+  {
+    "code": "AI-ARCH-01",
+    "name": "AI 기반 건축설계 도면·이미지 시각화",
+    "type": "양성",
+    "startDate": "2026-05-06",
+    "endDate": "2026-06-12",
+    "time": "09:00~18:00",
+    "location": "제주시 이도이동 제주인재개발원 2층",
+    "capacity": 15,
+    "status": "모집중"
+  },
+  {
+    "code": "DRONE-TOUR-01",
+    "name": "드론 활용 관광영상 제작과정",
+    "type": "양성",
+    "startDate": "2026-06-01",
+    "endDate": "2026-07-17",
+    "time": "09:00~18:00",
+    "location": "서귀포시 중문관광단지 내 교육장",
+    "capacity": 12,
+    "status": "모집중"
+  },
+  {
+    "code": "AI-COFFEE-01",
+    "name": "AI 활용 커피 로스팅 품질관리",
+    "type": "향상",
+    "startDate": "2026-04-21",
+    "endDate": "2026-05-02",
+    "time": "14:00~18:00",
+    "location": "제주시 애월읍 카페교육센터",
+    "capacity": 10,
+    "status": "모집중"
+  },
+  {
+    "code": "AI-TRAVEL-01",
+    "name": "여행업 AI 마케팅 실무과정",
+    "type": "향상",
+    "startDate": "2026-05-12",
+    "endDate": "2026-06-20",
+    "time": "18:30~21:30",
+    "location": "제주시 노형동 제주관광교육원",
+    "capacity": 25,
+    "status": "모집중"
+  },
+  {
+    "code": "SW-WELFARE-01",
+    "name": "사회복지시설 건강 베이커리 과정",
+    "type": "향상",
+    "startDate": "2026-07-01",
+    "endDate": "2026-08-21",
+    "time": "09:00~13:00",
+    "location": "제주시 조천읍 복지관 조리실습실",
+    "capacity": 15,
+    "status": "대기"
+  }
+]
