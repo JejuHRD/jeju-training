@@ -334,75 +334,17 @@ select:invalid,select option[value=""]{color:var(--gray-400)}
 // 과정 데이터 (GitHub Pages에서는 courses.json 파일로 분리)
 // 실제 운영 시: fetch('./courses.json') 으로 로드
 // =========================================================
-const COURSES_DATA = [
-  {
-    code: "AI-BAKERY-01",
-    name: "AI 스마트 베이커리 창업과정",
-    type: "양성",
-    startDate: "2026-04-15",
-    endDate: "2026-05-22",
-    time: "09:00~18:00",
-    location: "제주시 연동 제주직업전문학교 3층 실습실",
-    capacity: 20,
-    status: "모집중"
-  },
-  {
-    code: "AI-ARCH-01",
-    name: "AI 기반 건축설계 도면·이미지 시각화",
-    type: "양성",
-    startDate: "2026-05-06",
-    endDate: "2026-06-12",
-    time: "09:00~18:00",
-    location: "제주시 이도이동 제주인재개발원 2층",
-    capacity: 15,
-    status: "모집중"
-  },
-  {
-    code: "DRONE-TOUR-01",
-    name: "드론 활용 관광영상 제작과정",
-    type: "양성",
-    startDate: "2026-06-01",
-    endDate: "2026-07-17",
-    time: "09:00~18:00",
-    location: "서귀포시 중문관광단지 내 교육장",
-    capacity: 12,
-    status: "모집중"
-  },
-  {
-    code: "AI-COFFEE-01",
-    name: "AI 활용 커피 로스팅 품질관리",
-    type: "향상",
-    startDate: "2026-04-21",
-    endDate: "2026-05-02",
-    time: "14:00~18:00",
-    location: "제주시 애월읍 카페교육센터",
-    capacity: 10,
-    status: "모집중"
-  },
-  {
-    code: "AI-TRAVEL-01",
-    name: "여행업 AI 마케팅 실무과정",
-    type: "향상",
-    startDate: "2026-05-12",
-    endDate: "2026-06-20",
-    time: "18:30~21:30",
-    location: "제주시 노형동 제주관광교육원",
-    capacity: 25,
-    status: "모집중"
-  },
-  {
-    code: "SW-WELFARE-01",
-    name: "사회복지시설 건강 베이커리 과정",
-    type: "향상",
-    startDate: "2026-07-01",
-    endDate: "2026-08-21",
-    time: "09:00~13:00",
-    location: "제주시 조천읍 복지관 조리실습실",
-    capacity: 15,
-    status: "대기"
-  }
-];
+let COURSES_DATA = [];
 
+// courses.json에서 과정 목록 로드
+async function fetchCourses() {
+  try {
+    const res = await fetch('./courses.json');
+    COURSES_DATA = await res.json();
+  } catch (e) {
+    console.error('과정 목록 로드 실패:', e);
+  }
+}
 // =========================================================
 // 날짜 포맷
 // =========================================================
@@ -422,21 +364,8 @@ function formatPeriod(start, end) {
 // =========================================================
 // 과정 목록 로드 (캐싱 방식)
 // =========================================================
-function loadCourses() {
-  /*
-   * 실제 운영 시 GitHub Pages에서의 캐싱 전략:
-   * 
-   * 1) courses.json 파일을 GitHub 저장소에 배치
-   * 2) 과정정보 변경 시에만 JSON 파일 업데이트
-   * 3) 브라우저 캐시 + 버전 파라미터로 갱신 제어
-   * 
-   *   fetch(`./courses.json?v=${Date.now()}`)
-   *     .then(r => r.json())
-   *     .then(data => populateCourseSelect(data));
-   * 
-   * 또는 Apps Script에서 직접 로드:
-   *   fetch(APPS_SCRIPT_URL + '?action=getCourses')
-   */
+async function loadCourses() {
+  await fetchCourses();
   populateCourseSelect(COURSES_DATA);
 }
 
@@ -672,13 +601,14 @@ async function handleSubmit(e) {
      * const result = await res.json();
      */
     
-    // 프로토타입: 1.5초 딜레이로 시뮬레이션
-    await new Promise(r => setTimeout(r, 1500));
-    
-    const result = {
-      success: true,
-      regId: `T-2026-${String(Math.floor(Math.random()*900)+100).padStart(3,'0')}`
-    };
+    const APPS_SCRIPT_URL =
+      'https://script.google.com/macros/s/AKfycbzPXlKxmrcpV7W-AAWfQET0gRmjLnm9dZVrV8Xx7Gk0eZ6Nk3Bs_dt5TwLRYNYfBZJDvA/exec';
+
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    });
+    const result = await res.json();
     
     if (result.success) {
       showSuccess(result.regId, formData, courseData);
