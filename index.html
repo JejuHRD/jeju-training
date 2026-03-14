@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>훈련과정 온라인 접수 | 제주직업전문학교</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#1a6b8a;--primary-dark:#124d64;--primary-light:#e8f4f8;
+  --accent:#e8793a;--accent-light:#fff5ee;
+  --success:#2d8a4e;--success-light:#edf7f0;
+  --error:#c0392b;--error-light:#fdf0ef;
+  --gray-50:#fafafa;--gray-100:#f4f4f5;--gray-200:#e4e4e7;
+  --gray-300:#d4d4d8;--gray-400:#a1a1aa;--gray-500:#71717a;
+  --gray-600:#52525b;--gray-700:#3f3f46;--gray-800:#27272a;
+  --radius:10px;--radius-sm:6px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08);
+  --font:'Noto Sans KR',system-ui,-apple-system,sans-serif;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);color:var(--gray-800);background:#f0f4f7;min-height:100vh;line-height:1.6}
+
+/* Header */
+.header{background:var(--primary);color:#fff;padding:0}
+.header-inner{max-width:640px;margin:0 auto;padding:20px 24px}
+.header .institution{font-size:13px;font-weight:400;opacity:.85;letter-spacing:.3px;margin-bottom:4px}
+.header h1{font-size:22px;font-weight:700;letter-spacing:-.3px}
+.header .subtitle{font-size:13px;font-weight:300;opacity:.7;margin-top:6px}
+
+/* Progress Steps */
+.steps{background:#fff;border-bottom:1px solid var(--gray-200);position:sticky;top:0;z-index:10}
+.steps-inner{max-width:640px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:0}
+.step{display:flex;align-items:center;gap:8px;flex:1}
+.step-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:var(--gray-200);color:var(--gray-500);transition:all .3s}
+.step.active .step-num{background:var(--primary);color:#fff}
+.step.done .step-num{background:var(--success);color:#fff}
+.step-label{font-size:12.5px;color:var(--gray-500);font-weight:500;transition:color .3s}
+.step.active .step-label{color:var(--gray-800)}
+.step.done .step-label{color:var(--success)}
+.step-line{flex:0 0 auto;width:32px;height:1px;background:var(--gray-300);margin:0 4px}
+
+/* Main */
+.main{max-width:640px;margin:0 auto;padding:24px}
+
+/* Card */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+.card+.card{margin-top:16px}
+.card-header{padding:18px 24px 14px;border-bottom:1px solid var(--gray-100)}
+.card-header h2{font-size:16px;font-weight:600;color:var(--gray-800)}
+.card-header p{font-size:13px;color:var(--gray-500);margin-top:2px}
+.card-body{padding:20px 24px 24px}
+
+/* Form */
+.field{margin-bottom:20px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--gray-700);margin-bottom:6px}
+.field label .req{color:var(--error);margin-left:2px;font-weight:400}
+.field .hint{font-size:12px;color:var(--gray-400);margin-top:4px}
+.field .error-msg{font-size:12px;color:var(--error);margin-top:4px;display:none}
+.field.error .error-msg{display:block}
+.field.error input,.field.error select{border-color:var(--error)!important;background:var(--error-light)!important}
+
+input,select{
+  width:100%;height:48px;padding:0 14px;
+  border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);
+  font-family:var(--font);font-size:15px;color:var(--gray-800);
+  background:#fff;transition:border-color .2s,box-shadow .2s;
+  appearance:none;-webkit-appearance:none;
+}
+input:focus,select:focus{
+  outline:none;border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(26,107,138,.12);
+}
+input::placeholder{color:var(--gray-400)}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2371717a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:40px;cursor:pointer;
+}
+select:invalid,select option[value=""]{color:var(--gray-400)}
+
+/* Course Info Box */
+.course-info{
+  background:var(--primary-light);border:1px solid rgba(26,107,138,.15);
+  border-radius:var(--radius-sm);padding:14px 16px;margin-top:12px;
+  display:none;animation:slideDown .25s ease;
+}
+.course-info.show{display:block}
+.course-info dl{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;font-size:13.5px}
+.course-info dt{color:var(--primary-dark);font-weight:600}
+.course-info dd{color:var(--gray-700)}
+.course-info .badge{
+  display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;
+  border-radius:20px;margin-left:6px;vertical-align:middle;
+}
+.badge-양성{background:#e0f2fe;color:#0369a1}
+.badge-향상{background:#fef3c7;color:#92400e}
+.badge-대기{background:var(--gray-100);color:var(--gray-500)}
+
+/* Phone Input */
+.phone-wrapper{position:relative}
+.phone-wrapper .phone-prefix{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  font-size:15px;color:var(--gray-800);font-weight:500;pointer-events:none;
+  display:none;
+}
+.phone-valid{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  color:var(--success);font-size:18px;display:none;
+}
+
+/* Company field (향상과정) */
+.company-field{
+  max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .35s ease,opacity .3s ease,margin .3s ease;
+  margin-bottom:0;
+}
+.company-field.show{max-height:120px;opacity:1;margin-bottom:20px}
+
+/* Submit Button */
+.btn-submit{
+  width:100%;height:52px;border:none;border-radius:var(--radius-sm);
+  background:var(--primary);color:#fff;font-family:var(--font);
+  font-size:16px;font-weight:600;cursor:pointer;
+  transition:background .2s,transform .1s,opacity .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-submit:hover{background:var(--primary-dark)}
+.btn-submit:active{transform:scale(.99)}
+.btn-submit:disabled{background:var(--gray-300);cursor:not-allowed}
+.btn-submit .spinner{
+  width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;
+  animation:spin .6s linear infinite;display:none;
+}
+.btn-submit.loading .spinner{display:block}
+.btn-submit.loading .btn-text{display:none}
+
+/* Success Screen */
+.success-screen{display:none;text-align:center;padding:48px 24px}
+.success-icon{
+  width:72px;height:72px;border-radius:50%;background:var(--success-light);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+}
+.success-icon svg{width:36px;height:36px;color:var(--success)}
+.success-screen h2{font-size:22px;font-weight:700;color:var(--gray-800);margin-bottom:8px}
+.success-screen .reg-id{
+  font-size:28px;font-weight:700;color:var(--primary);
+  letter-spacing:1px;margin:16px 0;
+}
+.success-screen .info-box{
+  background:var(--gray-50);border-radius:var(--radius-sm);
+  padding:16px 20px;margin:20px 0;text-align:left;font-size:14px;
+}
+.success-screen .info-box dt{color:var(--gray-500);font-size:12.5px;margin-bottom:2px}
+.success-screen .info-box dd{color:var(--gray-800);font-weight:500;margin-bottom:12px}
+.success-screen .info-box dd:last-child{margin-bottom:0}
+.success-screen .note{font-size:13px;color:var(--gray-500);margin-top:16px;line-height:1.7}
+
+/* Footer */
+.footer{max-width:640px;margin:0 auto;padding:24px;text-align:center}
+.footer p{font-size:12px;color:var(--gray-400);line-height:1.8}
+.footer a{color:var(--primary);text-decoration:none}
+
+/* Animations */
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s ease}
+
+/* Responsive */
+@media(max-width:480px){
+  .header-inner{padding:16px 20px}
+  .header h1{font-size:19px}
+  .steps-inner{padding:12px 16px}
+  .step-line{width:20px}
+  .main{padding:16px}
+  .card-header{padding:14px 18px 12px}
+  .card-body{padding:16px 18px 20px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="institution">제주직업전문학교</div>
+    <h1>2026년 훈련과정 온라인 접수</h1>
+    <div class="subtitle">제주지역인적자원개발위원회 지원 사업</div>
+  </div>
+</header>
+
+<nav class="steps">
+  <div class="steps-inner">
+    <div class="step active" id="step-ind-1">
+      <div class="step-num">1</div>
+      <div class="step-label">정보입력</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-ind-2">
+      <div class="step-num">2</div>
+      <div class="step-label">확인</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step-ind-3">
+      <div class="step-num">3</div>
+      <div class="step-label">접수완료</div>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <!-- FORM -->
+  <form id="regForm" novalidate>
+    <!-- 과정 선택 -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2>훈련과정 선택</h2>
+        <p>수강을 원하는 훈련과정을 선택해 주세요</p>
+      </div>
+      <div class="card-body">
+        <div class="field" id="field-course">
+          <label>훈련과정<span class="req">*</span></label>
+          <select id="course" required>
+            <option value="">훈련과정을 선택하세요</option>
+          </select>
+          <div class="error-msg">훈련과정을 선택해 주세요</div>
+        </div>
+        <div class="course-info" id="courseInfo">
+          <dl>
+            <dt>과정유형</dt><dd id="ci-type"></dd>
+            <dt>훈련기간</dt><dd id="ci-period"></dd>
+            <dt>훈련시간</dt><dd id="ci-time"></dd>
+            <dt>훈련장소</dt><dd id="ci-location"></dd>
+            <dt>모집현황</dt><dd id="ci-capacity"></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- 신청자 정보 -->
+    <div class="card fade-in" style="animation-delay:.08s">
+      <div class="card-header">
+        <h2>신청자 정보</h2>
+        <p>정확한 정보를 입력해 주세요</p>
+      </div>
+      <div class="card-body">
+        <div class="field" id="field-name">
+          <label>이름<span class="req">*</span></label>
+          <input type="text" id="name" placeholder="홍길동" autocomplete="name" required maxlength="20">
+          <div class="error-msg">이름을 입력해 주세요</div>
+        </div>
+
+        <div class="field" id="field-phone">
+          <label>휴대폰 번호<span class="req">*</span></label>
+          <div class="phone-wrapper">
+            <input type="tel" id="phone" placeholder="010-0000-0000" autocomplete="tel" required maxlength="13" inputmode="numeric">
+            <div class="phone-valid" id="phoneValid">✓</div>
+          </div>
+          <div class="hint">카카오톡으로 훈련 안내가 발송됩니다</div>
+          <div class="error-msg">올바른 휴대폰 번호를 입력해 주세요 (010-XXXX-XXXX)</div>
+        </div>
+
+        <div class="company-field" id="companyField">
+          <div class="field" id="field-company">
+            <label>소속 사업체명<span class="req">*</span></label>
+            <input type="text" id="company" placeholder="(주)제주관광" maxlength="50">
+            <div class="hint">향상과정 신청 시 필수 입력</div>
+            <div class="error-msg">소속 사업체명을 입력해 주세요</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 안내 및 제출 -->
+    <div class="card fade-in" style="animation-delay:.16s">
+      <div class="card-body" style="padding-top:18px">
+        <div style="background:var(--accent-light);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:20px;font-size:13px;color:#92400e;line-height:1.7">
+          <strong style="display:block;margin-bottom:4px">안내사항</strong>
+          접수 완료 후 카카오톡으로 접수확인 메시지가 발송됩니다.<br>
+          훈련 시작 2주 전, 1주 전, 1일 전에 상세 안내가 순차 발송됩니다.
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-text">접수하기</span>
+          <div class="spinner"></div>
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="card fade-in">
+      <div style="padding:48px 24px">
+        <div class="success-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2>접수가 완료되었습니다</h2>
+        <p style="color:var(--gray-500);font-size:14px">아래 접수번호를 기억해 주세요</p>
+        <div class="reg-id" id="resultRegId">T-2026-042</div>
+        <div class="info-box">
+          <dl>
+            <dt>신청자</dt><dd id="resultName"></dd>
+            <dt>훈련과정</dt><dd id="resultCourse"></dd>
+            <dt>훈련기간</dt><dd id="resultPeriod"></dd>
+            <dt>훈련장소</dt><dd id="resultLocation"></dd>
+          </dl>
+        </div>
+        <p class="note">
+          카카오톡으로 접수확인 메시지가 발송되었습니다.<br>
+          메시지가 수신되지 않으면 SMS 문자로 대체 발송됩니다.<br>
+          문의: 064-XXX-XXXX
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>
+    제주직업전문학교 | 제주시 연동 000-00<br>
+    TEL 064-XXX-XXXX | <a href="mailto:info@example.com">info@example.com</a><br>
+    © 2026 제주지역인적자원개발위원회
+  </p>
+</footer>
+
+<script>
+// =========================================================
+// 과정 데이터 (GitHub Pages에서는 courses.json 파일로 분리)
+// 실제 운영 시: fetch('./courses.json') 으로 로드
+// =========================================================
+const COURSES_DATA = [
+  {
+    code: "AI-BAKERY-01",
+    name: "AI 스마트 베이커리 창업과정",
+    type: "양성",
+    startDate: "2026-04-15",
+    endDate: "2026-05-22",
+    time: "09:00~18:00",
+    location: "제주시 연동 제주직업전문학교 3층 실습실",
+    capacity: 20,
+    status: "모집중"
+  },
+  {
+    code: "AI-ARCH-01",
+    name: "AI 기반 건축설계 도면·이미지 시각화",
+    type: "양성",
+    startDate: "2026-05-06",
+    endDate: "2026-06-12",
+    time: "09:00~18:00",
+    location: "제주시 이도이동 제주인재개발원 2층",
+    capacity: 15,
+    status: "모집중"
+  },
+  {
+    code: "DRONE-TOUR-01",
+    name: "드론 활용 관광영상 제작과정",
+    type: "양성",
+    startDate: "2026-06-01",
+    endDate: "2026-07-17",
+    time: "09:00~18:00",
+    location: "서귀포시 중문관광단지 내 교육장",
+    capacity: 12,
+    status: "모집중"
+  },
+  {
+    code: "AI-COFFEE-01",
+    name: "AI 활용 커피 로스팅 품질관리",
+    type: "향상",
+    startDate: "2026-04-21",
+    endDate: "2026-05-02",
+    time: "14:00~18:00",
+    location: "제주시 애월읍 카페교육센터",
+    capacity: 10,
+    status: "모집중"
+  },
+  {
+    code: "AI-TRAVEL-01",
+    name: "여행업 AI 마케팅 실무과정",
+    type: "향상",
+    startDate: "2026-05-12",
+    endDate: "2026-06-20",
+    time: "18:30~21:30",
+    location: "제주시 노형동 제주관광교육원",
+    capacity: 25,
+    status: "모집중"
+  },
+  {
+    code: "SW-WELFARE-01",
+    name: "사회복지시설 건강 베이커리 과정",
+    type: "향상",
+    startDate: "2026-07-01",
+    endDate: "2026-08-21",
+    time: "09:00~13:00",
+    location: "제주시 조천읍 복지관 조리실습실",
+    capacity: 15,
+    status: "대기"
+  }
+];
+
+// =========================================================
+// 날짜 포맷
+// =========================================================
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const days = ['일','월','화','수','목','금','토'];
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}.${m}.${day}(${days[d.getDay()]})`;
+}
+
+function formatPeriod(start, end) {
+  return `${formatDate(start)} ~ ${formatDate(end)}`;
+}
+
+// =========================================================
+// 과정 목록 로드 (캐싱 방식)
+// =========================================================
+function loadCourses() {
+  /*
+   * 실제 운영 시 GitHub Pages에서의 캐싱 전략:
+   * 
+   * 1) courses.json 파일을 GitHub 저장소에 배치
+   * 2) 과정정보 변경 시에만 JSON 파일 업데이트
+   * 3) 브라우저 캐시 + 버전 파라미터로 갱신 제어
+   * 
+   *   fetch(`./courses.json?v=${Date.now()}`)
+   *     .then(r => r.json())
+   *     .then(data => populateCourseSelect(data));
+   * 
+   * 또는 Apps Script에서 직접 로드:
+   *   fetch(APPS_SCRIPT_URL + '?action=getCourses')
+   */
+  populateCourseSelect(COURSES_DATA);
+}
+
+function populateCourseSelect(courses) {
+  const sel = document.getElementById('course');
+  
+  // 모집중인 과정만 필터링
+  const available = courses.filter(c => c.status === '모집중');
+  const waiting = courses.filter(c => c.status === '대기');
+  
+  if (available.length > 0) {
+    const grp1 = document.createElement('optgroup');
+    grp1.label = '모집중';
+    available.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.code;
+      opt.textContent = `${c.name} (${c.type})`;
+      opt.dataset.course = JSON.stringify(c);
+      grp1.appendChild(opt);
+    });
+    sel.appendChild(grp1);
+  }
+
+  if (waiting.length > 0) {
+    const grp2 = document.createElement('optgroup');
+    grp2.label = '대기 (모집 예정)';
+    waiting.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.code;
+      opt.textContent = `${c.name} (${c.type})`;
+      opt.dataset.course = JSON.stringify(c);
+      opt.disabled = true;
+      grp2.appendChild(opt);
+    });
+    sel.appendChild(grp2);
+  }
+}
+
+// =========================================================
+// 과정 선택 시 정보 자동 표시
+// =========================================================
+function onCourseChange() {
+  const sel = document.getElementById('course');
+  const info = document.getElementById('courseInfo');
+  const companyField = document.getElementById('companyField');
+  const opt = sel.selectedOptions[0];
+  
+  if (!opt || !opt.dataset.course) {
+    info.classList.remove('show');
+    companyField.classList.remove('show');
+    return;
+  }
+  
+  const c = JSON.parse(opt.dataset.course);
+  
+  document.getElementById('ci-type').innerHTML = 
+    `${c.type}과정 <span class="badge badge-${c.type}">${c.type}</span>`;
+  document.getElementById('ci-period').textContent = formatPeriod(c.startDate, c.endDate);
+  document.getElementById('ci-time').textContent = c.time;
+  document.getElementById('ci-location').textContent = c.location;
+  document.getElementById('ci-capacity').textContent = `정원 ${c.capacity}명`;
+  
+  info.classList.add('show');
+  
+  // 향상과정이면 사업체명 필드 표시
+  if (c.type === '향상') {
+    companyField.classList.add('show');
+  } else {
+    companyField.classList.remove('show');
+    document.getElementById('company').value = '';
+  }
+  
+  clearError('field-course');
+}
+
+// =========================================================
+// 전화번호 자동 포맷팅 (010-XXXX-XXXX)
+// =========================================================
+function formatPhoneNumber(value) {
+  // 숫자만 추출
+  const nums = value.replace(/\D/g, '');
+  
+  // 최대 11자리
+  const limited = nums.slice(0, 11);
+  
+  // 포맷팅
+  if (limited.length <= 3) {
+    return limited;
+  } else if (limited.length <= 7) {
+    return `${limited.slice(0,3)}-${limited.slice(3)}`;
+  } else {
+    return `${limited.slice(0,3)}-${limited.slice(3,7)}-${limited.slice(7)}`;
+  }
+}
+
+function isValidPhone(value) {
+  return /^010-\d{4}-\d{4}$/.test(value);
+}
+
+function onPhoneInput(e) {
+  const input = e.target;
+  const cursorPos = input.selectionStart;
+  const prevLen = input.value.length;
+  
+  const formatted = formatPhoneNumber(input.value);
+  input.value = formatted;
+  
+  // 커서 위치 보정
+  const diff = formatted.length - prevLen;
+  const newPos = cursorPos + diff;
+  input.setSelectionRange(newPos, newPos);
+  
+  // 유효성 표시
+  const validMark = document.getElementById('phoneValid');
+  if (isValidPhone(formatted)) {
+    validMark.style.display = 'block';
+    clearError('field-phone');
+  } else {
+    validMark.style.display = 'none';
+  }
+}
+
+// 붙여넣기 대응
+function onPhonePaste(e) {
+  e.preventDefault();
+  const pasted = (e.clipboardData || window.clipboardData).getData('text');
+  const input = e.target;
+  input.value = formatPhoneNumber(pasted);
+  
+  const validMark = document.getElementById('phoneValid');
+  validMark.style.display = isValidPhone(input.value) ? 'block' : 'none';
+}
+
+// =========================================================
+// Validation
+// =========================================================
+function setError(fieldId, msg) {
+  const field = document.getElementById(fieldId);
+  field.classList.add('error');
+  if (msg) field.querySelector('.error-msg').textContent = msg;
+}
+
+function clearError(fieldId) {
+  document.getElementById(fieldId).classList.remove('error');
+}
+
+function validateForm() {
+  let valid = true;
+  
+  // 과정 선택
+  if (!document.getElementById('course').value) {
+    setError('field-course');
+    valid = false;
+  } else {
+    clearError('field-course');
+  }
+  
+  // 이름
+  const name = document.getElementById('name').value.trim();
+  if (!name) {
+    setError('field-name');
+    valid = false;
+  } else if (name.length < 2) {
+    setError('field-name', '이름을 2자 이상 입력해 주세요');
+    valid = false;
+  } else {
+    clearError('field-name');
+  }
+  
+  // 전화번호
+  const phone = document.getElementById('phone').value;
+  if (!isValidPhone(phone)) {
+    setError('field-phone');
+    valid = false;
+  } else {
+    clearError('field-phone');
+  }
+  
+  // 사업체명 (향상과정)
+  const companyField = document.getElementById('companyField');
+  if (companyField.classList.contains('show')) {
+    const company = document.getElementById('company').value.trim();
+    if (!company) {
+      setError('field-company');
+      valid = false;
+    } else {
+      clearError('field-company');
+    }
+  }
+  
+  return valid;
+}
+
+// =========================================================
+// 접수 제출
+// =========================================================
+async function handleSubmit(e) {
+  e.preventDefault();
+  
+  if (!validateForm()) {
+    // 첫 번째 에러 필드로 스크롤
+    const firstErr = document.querySelector('.field.error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  
+  const courseOpt = document.getElementById('course').selectedOptions[0];
+  const courseData = JSON.parse(courseOpt.dataset.course);
+  
+  const formData = {
+    name: document.getElementById('name').value.trim(),
+    phone: document.getElementById('phone').value,
+    courseCode: courseData.code,
+    courseName: courseData.name,
+    courseType: courseData.type,
+    company: document.getElementById('company').value.trim() || '',
+    startDate: courseData.startDate,
+    endDate: courseData.endDate,
+  };
+  
+  try {
+    /*
+     * 실제 운영 시:
+     * const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/.../exec';
+     * const res = await fetch(APPS_SCRIPT_URL, {
+     *   method: 'POST',
+     *   body: JSON.stringify(formData)
+     * });
+     * const result = await res.json();
+     */
+    
+    // 프로토타입: 1.5초 딜레이로 시뮬레이션
+    await new Promise(r => setTimeout(r, 1500));
+    
+    const result = {
+      success: true,
+      regId: `T-2026-${String(Math.floor(Math.random()*900)+100).padStart(3,'0')}`
+    };
+    
+    if (result.success) {
+      showSuccess(result.regId, formData, courseData);
+    }
+  } catch (err) {
+    alert('접수 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+}
+
+function showSuccess(regId, formData, courseData) {
+  // 단계 표시 업데이트
+  document.getElementById('step-ind-1').classList.remove('active');
+  document.getElementById('step-ind-1').classList.add('done');
+  document.getElementById('step-ind-2').classList.add('done');
+  document.getElementById('step-ind-3').classList.add('active');
+  
+  // 폼 숨기기, 성공 화면 표시
+  document.getElementById('regForm').style.display = 'none';
+  
+  const screen = document.getElementById('successScreen');
+  screen.style.display = 'block';
+  
+  document.getElementById('resultRegId').textContent = regId;
+  document.getElementById('resultName').textContent = formData.name;
+  document.getElementById('resultCourse').textContent = courseData.name;
+  document.getElementById('resultPeriod').textContent = formatPeriod(courseData.startDate, courseData.endDate);
+  document.getElementById('resultLocation').textContent = courseData.location;
+  
+  // 맨 위로 스크롤
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// =========================================================
+// 이벤트 바인딩
+// =========================================================
+document.addEventListener('DOMContentLoaded', () => {
+  loadCourses();
+  
+  document.getElementById('course').addEventListener('change', onCourseChange);
+  document.getElementById('phone').addEventListener('input', onPhoneInput);
+  document.getElementById('phone').addEventListener('paste', onPhonePaste);
+  document.getElementById('regForm').addEventListener('submit', handleSubmit);
+  
+  // 실시간 validation clear
+  document.getElementById('name').addEventListener('input', () => clearError('field-name'));
+  document.getElementById('company').addEventListener('input', () => clearError('field-company'));
+});
+</script>
+
+</body>
+</html>
