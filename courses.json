@@ -9,5 +9,16 @@
     "location": "폴리텍",
     "capacity": 16,
     "status": "모집중"
+  },
+  {
+    "code": "폴리텍1",
+    "name": "냉동공조설비운영",
+    "type": "향상",
+    "startDate": "2026-04-20",
+    "endDate": "2026-04-21",
+    "time": "16",
+    "location": "폴리텍대학 설비강의실",
+    "capacity": 16,
+    "status": "모집중"
   }
 ]
